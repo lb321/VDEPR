@@ -6,15 +6,16 @@ var raspberryPi_Lift = [];
 var socket = require('socket.io-client')('http://localhost/scanner');
 
 //replace with your hardware address
-var addressToTrack = '623bc0d1cffb';
+var addressToTrack = '435aeb04f0ba';
 
 socket.on('connect', function(){
     console.log('connected to server');
 });
 
 noble.on('discover', function(peripheral){
-    if(peripheral.advertisement.localName && peripheral.advertisement.localName.indexOf('BlueUp') != -1){
-        console.log('Beacon ' + peripheral.advertisement.localName + ',' + 'found at time: ' + timeconverter(Date.now()));
+    //console.log(peripheral.advertisement.localName +  ', ' + peripheral.uuid);
+    if(peripheral.advertisement.localName && peripheral.advertisement.localName.indexOf('BlueUp') != -1 || peripheral.uuid == addressToTrack){
+        console.log('Beacon ' + peripheral.advertisement.localName + ',' + 'found at time: ' + timeconverter(Date.now()) + ',' + peripheral.rssi );
         //raspberryPi_Lift.push('Beacon ' + peripheral.advertisement.localName + ',' + 'found at time: ' + timeconverter(Date.now()) + '\n\r');
         raspberryPi_Lift.push(peripheral.advertisement.localName + ',' + timeconverter(Date.now()) + ',' + peripheral.rssi + '\n\r');
         if (raspberryPi_Lift.length >= 5) {
@@ -34,8 +35,8 @@ noble.on('stateChange', function(state) {
 });
 
 function writeArray(array) {
-    var currentDate = Date.now();
-    var fileName = './lijst' + currentDate.getDate() + '-' + currentDate.getMonth() + '-' + currentDate.getYear() + '.csv';
+    var currentDate = new Date(Date.now());
+    var fileName = './lijst' + currentDate.getDate() + '-' + currentDate.getMonth() + '-' + currentDate.getFullYear() + '.csv';
     //fs.writeFile('./lijst.csv',raspberryPi_Lift.join(''),{flag:'a'});
     fs.appendFile(fileName, array);//  append data to a file, creating the file if it does not yet exist
 }
