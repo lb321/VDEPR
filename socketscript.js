@@ -36,7 +36,7 @@ noble.on('stateChange', function(state) {
 
 function writeArray(array) {
     var currentDate = new Date(Date.now());
-    var fileName = './lijst' + currentDate.getDate() + '-' + currentDate.getMonth() + '-' + currentDate.getFullYear() + '.csv';
+    var fileName = './lijst' + currentDate.getDate() + '-' + Number(currentDate.getMonth() + 1) + '-' + currentDate.getFullYear() + '.csv';
     //fs.writeFile('./lijst.csv',raspberryPi_Lift.join(''),{flag:'a'});
     fs.appendFile(fileName, array.join(''));//  append data to a file, creating the file if it does not yet exist
 }
