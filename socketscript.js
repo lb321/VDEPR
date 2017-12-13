@@ -8,6 +8,8 @@ var socket = require('socket.io-client')('http://localhost/scanner');
 //replace with your hardware address
 var addressToTrack = '69384fed5bc9';
 
+var filename;
+
 socket.on('connect', function(){
     console.log('connected to server');
 });
@@ -36,7 +38,6 @@ noble.on('stateChange', function(state) {
 
 function writeArray(array) {
     var currentDate = new Date(Date.now());
-    var fileName = './lijst' + currentDate.getDate() + '-' + Number(currentDate.getMonth() + 1) + '-' + currentDate.getFullYear() + '.csv';
     //fs.writeFile('./lijst.csv',raspberryPi_Lift.join(''),{flag:'a'});
     fs.appendFile(fileName, array.join(''));//  append data to a file, creating the file if it does not yet exist
 }
@@ -57,6 +58,12 @@ function calculateDistance(rssi) {
         var distance =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
         return distance * 0.3048;
     }
+}
+
+function generateFilename() {
+    filename = fs.readdir('./data/', (err, files) => {
+        return './data/lijst_' + files.length + '_' + currentDate.getDate() + '-' + Number(currentDate.getMonth() + 1) + '-' + currentDate.getFullYear() + '.csv';
+    });
 }
 
 function timeconverter(UNIX_timestamp){
